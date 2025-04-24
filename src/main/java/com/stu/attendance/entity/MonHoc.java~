@@ -1,0 +1,4 @@
+package com.stu.attendance.entity;
+
+public class MonHoc {
+}

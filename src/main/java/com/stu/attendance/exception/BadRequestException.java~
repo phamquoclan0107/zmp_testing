@@ -1,0 +1,4 @@
+package com.stu.attendance.exception;
+
+public class BadRequestException {
+}

@@ -1,0 +1,46 @@
+package com.stu.attendance.controller;
+
+import com.stu.attendance.dto.LoginRequest;
+import com.stu.attendance.dto.LoginResponse;
+import com.stu.attendance.dto.PasswordChangeRequest;
+import com.stu.attendance.service.AuthService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/auth")//dành cho xác thực
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final AuthService authService;
+
+    @PostMapping("/login")//dăng nhập
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.authenticate(loginRequest));
+    }
+
+    @PostMapping("/refresh")//làm mới token
+    public ResponseEntity<LoginResponse> refreshToken(@RequestParam String refreshToken) {
+        return ResponseEntity.ok(authService.refreshToken(refreshToken));
+    }
+
+    @PostMapping("/change-password")//  doi mat khau
+    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordChangeRequest request) {
+        authService.changePassword(request.getOldPassword(), request.getNewPassword());
+        return ResponseEntity.ok("Mật khẩu đã được thay đổi thành công.");
+    }
+
+    @PostMapping("/reset-password")//khoi phuc mat khau
+    public ResponseEntity<String> resetPassword(@RequestParam String email) {
+        authService.resetPassword(email);
+        return ResponseEntity.ok("Email khôi phục mật khẩu đã được gửi.");
+    }
+
+    @PostMapping("/logout")//dăng xuat
+    public ResponseEntity<String> logout() {
+        authService.logout();
+        return ResponseEntity.ok("Đăng xuất thành công.");
+    }
+}

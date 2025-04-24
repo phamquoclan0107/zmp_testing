@@ -1,0 +1,4 @@
+package com.stu.attendance.repository;
+
+public class ClassRepository {
+}

@@ -1,0 +1,4 @@
+package com.stu.attendance.config;
+
+public class WebConfig {
+}

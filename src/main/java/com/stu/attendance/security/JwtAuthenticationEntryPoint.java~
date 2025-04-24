@@ -1,0 +1,4 @@
+package com.stu.attendance.security;
+
+public class JwtAuthenticationEntryPoint {
+}

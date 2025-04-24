@@ -1,0 +1,43 @@
+package com.stu.attendance.security;
+
+import com.stu.attendance.entity.TaiKhoan;
+import com.stu.attendance.exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+
+@Service
+@RequiredArgsConstructor
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+    private final TaiKhoanRepository taiKhoanRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        TaiKhoan taiKhoan = taiKhoanRepository.findByTenTaiKhoan(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy tài khoản: " + username));
+
+        return User.builder()
+                .username(taiKhoan.getTenTaiKhoan())
+                .password(taiKhoan.getMatKhau())
+                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + taiKhoan.getRole().name())))
+                .build();
+    }
+
+    public UserDetails loadUserById(String userId) {
+        TaiKhoan taiKhoan = taiKhoanRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tài khoản với ID: " + userId));
+
+        return User.builder()
+                .username(taiKhoan.getTenTaiKhoan())
+                .password(taiKhoan.getMatKhau())
+                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + taiKhoan.getRole().name())))
+                .build();
+    }
+}
